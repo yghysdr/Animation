@@ -2,6 +2,12 @@ package shun.com.animation.home.view;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import shun.com.animation.R;
@@ -9,15 +15,106 @@ import shun.com.animation.base.BaseActivity;
 import shun.com.animation.home.presenter.IMainPresenter;
 import shun.com.animation.home.presenter.MainPresenter;
 
-public class MainActivity extends BaseActivity implements IMainActivity {
+public class MainActivity extends BaseActivity implements IMainActivity, View.OnClickListener {
 
+    private AnimationDrawable mAnimationDrawable;
+    private IMainPresenter mMainPresenter;
+
+    private ImageView ivTween;
     private ImageView ivFrame;
-    private AnimationDrawable animationDrawable;
-    private IMainPresenter mainPresenter;
+    private AlphaAnimation mAlpha;
+    private Button btnAlpha;
+    private RotateAnimation mRotate;
+    private Button btnRotate;
+
+    public final int DURATION = 2 * 1000;
+    public final int REPATE_COUNT = 1;
+    private Button btnScale;
+    private Button btnTranslate;
+    private TranslateAnimation mTranslate;
+    private ScaleAnimation mScale;
 
     @Override
     public void init() {
-        mainPresenter = new MainPresenter(this);
+        mMainPresenter = new MainPresenter(this);
+        initRotate();
+        initAlpha();
+        initScale();
+        initTranslate();
+    }
+
+    private void initTranslate() {
+        // 位移的x轴起始坐标的类型(相对于自己还是相对父容器)
+        int fromXType = Animation.RELATIVE_TO_SELF;
+        // x轴起点
+        float fromXValue = 1.0f;
+        int toXType = Animation.RELATIVE_TO_SELF;
+        // X轴的终点
+        float toXValue = 0.0f;
+        int fromYType = Animation.RELATIVE_TO_SELF;
+        // Y轴的起始坐标
+        float fromYValue = -0.0f;
+        int toYType = Animation.RELATIVE_TO_SELF;
+        // Y轴的终点坐标
+        float toYValue = 0.0f;
+        mTranslate = new TranslateAnimation(fromXType, fromXValue, toXType, toXValue, fromYType, fromYValue, toYType, toYValue);
+        mTranslate.setDuration(DURATION);
+    }
+
+    private void initScale() {
+        // 0.0f代表0点的位置；0.5f代表图片宽度的一半的位置；1.0f代表图片整个图片宽度的位置；2.0f代表整个图片宽度的2倍；
+        // 水平方向比例尺的起始值
+        float fromX = 0.0f;
+        // 水平方向比例尺的终值
+        float toX = 2.0f;
+        // 垂直方向比例尺的起始值
+        float fromY = 0.0f;
+        // 垂直方向比例尺的终值
+        float toY = 2.0f;
+        // X轴的原点的类型（相对于自己而言还是相对于父容器而言）
+        int pivotXType = Animation.RELATIVE_TO_SELF;
+        // 开始伸缩时的X轴的原点(例:0.5就是指以图片宽度的二分之一的位置作为X轴的原点)
+        float pivotXValue = 0.0f;
+        int pivotYType = Animation.RELATIVE_TO_SELF;
+        float pivotYValue = 0.0f;
+        mScale = new ScaleAnimation(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue);
+        mScale.setDuration(DURATION);
+    }
+
+    private void initAlpha() {
+        mAlpha = new AlphaAnimation(1.0f, 0.0f);
+        mAlpha.setDuration(DURATION); // 动画持续多久
+        mAlpha.setFillAfter(true); // 设为true之后,界面会停留在动画播放完时的界面
+        mAlpha.setRepeatMode(Animation.REVERSE); // 动画重启或逆转，默认值为重启动画
+        mAlpha.setRepeatCount(REPATE_COUNT); // 设置动画重复的次数（不包含原本要执行的那次）
+    }
+
+    private void initRotate() {
+        // 旋转的起始角度
+        float fromDegrees = 0;
+        //旋转的目标角度
+        float toDegrees = 360;
+        //旋转的X轴中心点类型
+        //分为三种类型：Animation.ABSOLUTE, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_PARENT.
+        //X轴的原点的类型（相对于自己而言还是相对于父容器而言）
+        int pivotXType = Animation.RELATIVE_TO_SELF;
+        //旋转的X轴坐标的值，一般被指定为一个百分比数；1.0代表着100%
+        //开始伸缩时的X轴的原点(例:0.5就是指以图片宽度的二分之一的位置作为X轴的原点)
+        float pivotXValue = 0.5f;
+        //Y轴的原点的类型
+        int pivotYType = Animation.RELATIVE_TO_SELF;
+        //开始伸缩时的Y轴的原点
+        float pivotYValue = 0.5f;
+        /*
+         *这里对pivotXValue和pivotYValue的值详细说明一下
+         *在Android中的坐标轴Y轴向下是增张的，X轴向右是增长的；
+         *pivotXValue在API中被说明为：旋转的X轴坐标的值，一般被指定为一个百分比数；1.0代表着100%
+         *也就是说，当我们指定为0.0f时，代表作是图片的X轴的0点；当指定为0.5f时，代表图片的width/2的位置；当被指定为1.0f时，代表图片的width位置；
+         */
+        mRotate = new RotateAnimation(fromDegrees, toDegrees, pivotXType, pivotXValue, pivotYType, pivotYValue);
+        mRotate.setDuration(DURATION); // 动画持续多久
+        mRotate.setRepeatCount(REPATE_COUNT); // 设置动画重复的次数
+//        mRotate.setStartOffset(2 * 1000); // 设置动画启动时间的偏移量，简单来说就是多长时间后启动动画
     }
 
     @Override
@@ -28,46 +125,70 @@ public class MainActivity extends BaseActivity implements IMainActivity {
     @Override
     public void initViews() {
         ivFrame = (ImageView) findViewById(R.id.iv_frame);
+        ivTween = (ImageView) findViewById(R.id.iv_tween);
+        btnAlpha = (Button) findViewById(R.id.btn_alpha);
+        btnRotate = (Button) findViewById(R.id.btn_rotate);
+        btnScale = (Button) findViewById(R.id.btn_scale);
+        btnTranslate = (Button) findViewById(R.id.btn_translate);
     }
 
     @Override
     public void initListener() {
-        ivFrame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainPresenter.changeAnimation(0);
-            }
-        });
+        ivFrame.setOnClickListener(this);
+        btnAlpha.setOnClickListener(this);
+        btnRotate.setOnClickListener(this);
+        btnScale.setOnClickListener(this);
+        btnTranslate.setOnClickListener(this);
     }
 
 
     @Override
     public void changeAnimation(boolean isOpen, int flag) {
         switch (flag) {
-            case 0: {
+            case R.id.iv_frame:
                 if (!isOpen) {
                     ivFrame.setBackgroundResource(R.drawable.frame_voice);
-                    animationDrawable = (AnimationDrawable) ivFrame.getBackground();
-                    animationDrawable.start();
+                    mAnimationDrawable = (AnimationDrawable) ivFrame.getBackground();
+                    mAnimationDrawable.start();
                 } else {
                     ivFrame.setBackgroundResource(R.drawable.chat_left_voice_3);
-                    animationDrawable.stop();
+                    mAnimationDrawable.stop();
                 }
-            }
+                break;
+            case R.id.btn_alpha:
+                ivTween.startAnimation(mAlpha);
+                break;
+            case R.id.btn_rotate:
+                ivTween.startAnimation(mRotate);
+                break;
+            case R.id.btn_scale:
+                ivTween.startAnimation(mScale);
+                break;
+            case R.id.btn_translate:
+                ivTween.startAnimation(mTranslate);
+                ivTween.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
     @Override
     public boolean getAnimationStatue(int flag) {
         switch (flag) {
-            case 0: {
-                if (animationDrawable == null) {
+            case R.id.iv_frame: {
+                if (mAnimationDrawable == null) {
                     return false;
                 }
-                return animationDrawable.isRunning();
+                return mAnimationDrawable.isRunning();
             }
+            case R.id.iv_tween:
+                return false;
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        mMainPresenter.changeAnimation(view.getId());
     }
 }
