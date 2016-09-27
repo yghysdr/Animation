@@ -1,42 +1,58 @@
 package shun.com.animation.home.view;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import shun.com.animation.R;
 import shun.com.animation.base.BaseActivity;
-import shun.com.animation.home.presenter.IMainPresenter;
-import shun.com.animation.home.presenter.MainPresenter;
+import shun.com.animation.home.presenter.AnimationPresenter;
+import shun.com.animation.home.presenter.IAnimationPresenter;
 
-public class MainActivity extends BaseActivity implements IMainActivity, View.OnClickListener {
-
-    private AnimationDrawable mAnimationDrawable;
-    private IMainPresenter mMainPresenter;
-
-    private ImageView ivTween;
-    private ImageView ivFrame;
-    private AlphaAnimation mAlpha;
-    private Button btnAlpha;
-    private RotateAnimation mRotate;
-    private Button btnRotate;
+public class MainActivity extends BaseActivity implements IAnimation {
 
     public final int DURATION = 2 * 1000;
-    public final int REPATE_COUNT = 1;
-    private Button btnScale;
-    private Button btnTranslate;
+    public final int REPEAT_COUNT = 1;
+
+    @BindView(R.id.iv_frame)
+    ImageView ivFrame;
+    @BindView(R.id.btn_alpha)
+    Button btnAlpha;
+    @BindView(R.id.btn_rotate)
+    Button btnRotate;
+    @BindView(R.id.btn_scale)
+    Button btnScale;
+    @BindView(R.id.btn_translate)
+    Button btnTranslate;
+    @BindView(R.id.iv_tween)
+    ImageView ivTween;
+    @BindView(R.id.btn_to_property)
+    Button btnToProperty;
+
+    private IAnimationPresenter mMainPresenter;
+
+
+    private AnimationDrawable mAnimationDrawable;
+    private Animation mAlpha;
     private TranslateAnimation mTranslate;
     private ScaleAnimation mScale;
+    private RotateAnimation mRotate;
 
     @Override
     public void init() {
-        mMainPresenter = new MainPresenter(this);
+        mMainPresenter = new AnimationPresenter(this);
         initRotate();
         initAlpha();
         initScale();
@@ -86,7 +102,9 @@ public class MainActivity extends BaseActivity implements IMainActivity, View.On
         mAlpha.setDuration(DURATION); // 动画持续多久
         mAlpha.setFillAfter(true); // 设为true之后,界面会停留在动画播放完时的界面
         mAlpha.setRepeatMode(Animation.REVERSE); // 动画重启或逆转，默认值为重启动画
-        mAlpha.setRepeatCount(REPATE_COUNT); // 设置动画重复的次数（不包含原本要执行的那次）
+        mAlpha.setRepeatCount(REPEAT_COUNT); // 设置动画重复的次数（不包含原本要执行的那次）
+
+//        mAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
     }
 
     private void initRotate() {
@@ -113,7 +131,7 @@ public class MainActivity extends BaseActivity implements IMainActivity, View.On
          */
         mRotate = new RotateAnimation(fromDegrees, toDegrees, pivotXType, pivotXValue, pivotYType, pivotYValue);
         mRotate.setDuration(DURATION); // 动画持续多久
-        mRotate.setRepeatCount(REPATE_COUNT); // 设置动画重复的次数
+        mRotate.setRepeatCount(REPEAT_COUNT); // 设置动画重复的次数
 //        mRotate.setStartOffset(2 * 1000); // 设置动画启动时间的偏移量，简单来说就是多长时间后启动动画
     }
 
@@ -121,26 +139,6 @@ public class MainActivity extends BaseActivity implements IMainActivity, View.On
     public void initContentView() {
         setContentView(R.layout.activity_main);
     }
-
-    @Override
-    public void initViews() {
-        ivFrame = (ImageView) findViewById(R.id.iv_frame);
-        ivTween = (ImageView) findViewById(R.id.iv_tween);
-        btnAlpha = (Button) findViewById(R.id.btn_alpha);
-        btnRotate = (Button) findViewById(R.id.btn_rotate);
-        btnScale = (Button) findViewById(R.id.btn_scale);
-        btnTranslate = (Button) findViewById(R.id.btn_translate);
-    }
-
-    @Override
-    public void initListener() {
-        ivFrame.setOnClickListener(this);
-        btnAlpha.setOnClickListener(this);
-        btnRotate.setOnClickListener(this);
-        btnScale.setOnClickListener(this);
-        btnTranslate.setOnClickListener(this);
-    }
-
 
     @Override
     public void changeAnimation(boolean isOpen, int flag) {
@@ -188,7 +186,28 @@ public class MainActivity extends BaseActivity implements IMainActivity, View.On
     }
 
     @Override
-    public void onClick(View view) {
-        mMainPresenter.changeAnimation(view.getId());
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
+
+    @OnClick({R.id.btn_alpha, R.id.btn_rotate, R.id.btn_scale, R.id.btn_translate, R.id.iv_tween
+            , R.id.btn_to_property})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_alpha:
+            case R.id.btn_rotate:
+            case R.id.btn_scale:
+            case R.id.btn_translate:
+            case R.id.iv_tween:
+                mMainPresenter.changeAnimation(view.getId());
+                break;
+            case R.id.btn_to_property:
+                startActivity(new Intent(MainActivity.this, PropertyActivity.class));
+                break;
+        }
+
+    }
+
 }

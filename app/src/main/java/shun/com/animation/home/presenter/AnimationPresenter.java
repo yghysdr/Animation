@@ -1,14 +1,14 @@
 package shun.com.animation.home.presenter;
 
-import shun.com.animation.home.view.IMainActivity;
+import shun.com.animation.home.view.IAnimation;
 
 /**
  * Created by HX on 2016/9/20.
  */
-public class MainPresenter implements IMainPresenter {
-    IMainActivity activity;
+public class AnimationPresenter implements IAnimationPresenter {
+    IAnimation activity;
 
-    public MainPresenter(IMainActivity activity) {
+    public AnimationPresenter(IAnimation activity) {
         this.activity = activity;
     }
 

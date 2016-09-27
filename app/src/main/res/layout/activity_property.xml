@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_property"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".home.view.MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="帧动画"
-        android:textSize="20dp" />
-
-    <ImageView
-        android:id="@+id/iv_frame"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/chat_left_voice_3" />
+    tools:context="shun.com.animation.home.view.PropertyActivity"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="属性动画"
         android:textSize="20dp" />
-    <Button
-        android:id="@+id/btn_to_property"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="跳转"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -58,12 +41,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="位移" />
-
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <shun.com.animation.weight.PointWeight
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <ImageView
             android:id="@+id/iv_tween"
@@ -72,5 +58,9 @@
             android:layout_centerInParent="true"
             android:background="@mipmap/ic_launcher" />
     </RelativeLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
