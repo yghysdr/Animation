@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity implements IAnimation {
         int pivotYType = Animation.RELATIVE_TO_SELF;
         float pivotYValue = 0.0f;
         mScale = new ScaleAnimation(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue);
+        mScale.setFillAfter(true);
         mScale.setDuration(DURATION);
     }
 

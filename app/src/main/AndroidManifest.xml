@@ -15,7 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".home.view.PropertyActivity"></activity>
+        <activity
+            android:name=".home.view.PropertyActivity"
+            android:theme="@style/Transparent"
+             />
     </application>
 
 </manifest>
